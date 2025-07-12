@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import StatusBadge from "./StatusBadge";
 import { drivers } from "../data/drivers";
 import classNames from "classnames";
+import { compute_total_score } from "../utils/calculators";
 
 export default function DeliveryTable({ deliveries, onRowClick }) {
   const [search, setSearch] = useState("");
@@ -12,6 +13,7 @@ export default function DeliveryTable({ deliveries, onRowClick }) {
     const d = drivers.find((d) => d.id === id);
     return d ? d.name : "-";
   };
+  const getDriver = (id) => drivers.find((d) => d.id === id);
 
   const filtered = deliveries
     .filter(
@@ -88,6 +90,7 @@ export default function DeliveryTable({ deliveries, onRowClick }) {
               >
                 Driver
               </th>
+              <th className="px-2 py-2">Fit Score</th>
               <th
                 className="px-2 py-2 cursor-pointer"
                 onClick={() => handleSort("status")}
@@ -97,26 +100,41 @@ export default function DeliveryTable({ deliveries, onRowClick }) {
             </tr>
           </thead>
           <tbody>
-            {filtered.map((d) => (
-              <tr
-                key={d.id}
-                className={classNames(
-                  "border-b hover:bg-blue-50 cursor-pointer transition",
-                  d.status === "Delivered" ? "opacity-70" : ""
-                )}
-                onClick={() => onRowClick(d)}
-              >
-                <td className="px-2 py-2 font-medium">{d.id}</td>
-                <td className="px-2 py-2">{d.pickup}</td>
-                <td className="px-2 py-2">{d.drop}</td>
-                <td className="px-2 py-2">{d.size_lbs}</td>
-                <td className="px-2 py-2">{d.eta}</td>
-                <td className="px-2 py-2">{getDriverName(d.assignedDriver)}</td>
-                <td className="px-2 py-2">
-                  <StatusBadge status={d.status} />
-                </td>
-              </tr>
-            ))}
+            {filtered.map((d) => {
+              const driver = getDriver(d.assignedDriver);
+              const score = compute_total_score(driver, d);
+              return (
+                <tr
+                  key={d.id}
+                  className={classNames(
+                    "border-b hover:bg-blue-50 cursor-pointer transition",
+                    d.status === "Delivered" ? "opacity-70" : ""
+                  )}
+                  onClick={() => onRowClick(d)}
+                >
+                  <td className="px-2 py-2 font-medium">{d.id}</td>
+                  <td className="px-2 py-2">{d.pickup}</td>
+                  <td className="px-2 py-2">{d.drop}</td>
+                  <td className="px-2 py-2">{d.size_lbs}</td>
+                  <td className="px-2 py-2">{d.eta}</td>
+                  <td className="px-2 py-2">
+                    {getDriverName(d.assignedDriver)}
+                  </td>
+                  <td className="px-2 py-2">
+                    <span
+                      className="font-bold text-blue-700 bg-blue-50 px-2 py-1 rounded cursor-help"
+                      title="Driver Fit Score: Higher means better match for this delivery (distance, reliability, acceptance, sustainability, delay, cost)"
+                    >
+                      {score.toFixed(4)}
+                    </span>
+                    
+                  </td>
+                  <td className="px-2 py-2">
+                    <StatusBadge status={d.status} />
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

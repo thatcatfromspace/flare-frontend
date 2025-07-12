@@ -26,7 +26,7 @@ export default function AppLayout({ children }) {
   return (
     <div className="min-h-screen flex bg-gray-50">
       <aside className="w-20 md:w-56 bg-white shadow-lg flex flex-col items-center py-6">
-        <img src={flareLogo} alt="FLARE Logo" className="w-16 h-16 mb-8" />
+        <img src={flareLogo} height={36} alt="FLARE Logo" className="w-16 h-16 mb-8" />
         <nav className="flex flex-col gap-4 w-full items-center">
           {navItems.map((item) => (
             <Link

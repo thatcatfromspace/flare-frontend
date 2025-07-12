@@ -39,7 +39,7 @@ export default function DriverCard({ driver, onClick, selected }) {
         <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded">
           {driver.fuelType}
         </span>
-        <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded">
+        <span className="bg-purple-100 text-purple-700 px-2 py-0.5 rounded">
           {driver.completedDeliveries} deliveries
         </span>
         <span

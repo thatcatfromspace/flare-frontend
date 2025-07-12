@@ -47,24 +47,28 @@ const vehicleTypeCounts = drivers.reduce((acc, d) => {
   return acc;
 }, {});
 
+// Additional KPIs
+const activeDrivers = drivers.filter((d) => d.status === "Available").length;
+const inTransitDeliveries = deliveries.filter(
+  (d) => d.status === "In Transit"
+).length;
+const pendingDeliveries = deliveries.filter(
+  (d) => d.status === "Pending"
+).length;
+
 export default function DashboardPage() {
   return (
     <div className="space-y-8 bg-white">
       <h1 className="text-2xl md:text-3xl font-bold mb-2 text-blue-700">
         FLARE Dashboard
       </h1>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {/* KPIs Row */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
         <KPIStatCard
           icon={<FaTruck />}
           label="Total Deliveries"
           value={totalDeliveries}
           color="blue"
-        />
-        <KPIStatCard
-          icon={<FaCheckCircle />}
-          label="Completed"
-          value={completedDeliveries}
-          color="green"
         />
         <KPIStatCard
           icon={<FaClock />}
@@ -73,29 +77,6 @@ export default function DashboardPage() {
           unit="min"
           color="yellow"
         />
-        <KPIStatCard
-          icon={<FaDollarSign />}
-          label="Cost Saved"
-          value={costSaved}
-          unit="$"
-          color="emerald"
-        />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="bg-white rounded-xl shadow p-6">
-          <h2 className="font-semibold text-lg mb-2 text-blue-700">
-            Delivery Trends (7 days)
-          </h2>
-          <DeliveryTrendsChart data={trends} />
-        </div>
-        <div className="bg-white rounded-xl shadow p-6">
-          <h2 className="font-semibold text-lg mb-2 text-blue-700">
-            Vehicle Type Usage
-          </h2>
-          <VehicleTypePieChart data={vehicleTypeCounts} />
-        </div>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <KPIStatCard
           icon={<FaLeaf />}
           label="CO₂ Saved"
@@ -110,6 +91,29 @@ export default function DashboardPage() {
           unit="gal"
           color="yellow"
         />
+        <KPIStatCard
+          icon={<FaDollarSign />}
+          label="Cost Saved"
+          value={costSaved}
+          unit="$"
+          color="emerald"
+        />
+        
+      </div>
+      {/* Charts Row */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="bg-white rounded-xl shadow p-6">
+          <h2 className="font-semibold text-lg mb-2 text-blue-700">
+            Delivery Trends (7 days)
+          </h2>
+          <DeliveryTrendsChart data={trends} />
+        </div>
+        <div className="bg-white rounded-xl shadow p-6">
+          <h2 className="font-semibold text-lg mb-2 text-blue-700">
+            Vehicle Type Usage
+          </h2>
+          <VehicleTypePieChart data={vehicleTypeCounts} />
+        </div>
       </div>
     </div>
   );
